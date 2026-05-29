@@ -1,6 +1,10 @@
 """A minimal TODO MCP server.
 
-Storage is a flat JSON file (~/.todos.json by default; override with $TODO_DB).
+Storage is a flat JSON file. By default it lives in the current working
+directory (./.todos.json) -- an MCP stdio server is launched with its cwd set
+to the project you started the client in, so each project gets its own list.
+Override the path with $TODO_DB.
+
 Each tool is a thin wrapper over a plain helper function so the logic stays
 unit-testable without going through the MCP transport.
 """
@@ -11,7 +15,7 @@ import pathlib
 
 from mcp.server.fastmcp import FastMCP
 
-DB = pathlib.Path(os.environ.get("TODO_DB", pathlib.Path.home() / ".todos.json"))
+DB = pathlib.Path(os.environ.get("TODO_DB", pathlib.Path.cwd() / ".todos.json"))
 
 mcp = FastMCP("todo")
 

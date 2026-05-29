@@ -14,9 +14,29 @@ plus a flat JSON file for storage. No database, no build step.
 | `remove_todo` | `id: int` | Delete a todo |
 | `clear_completed_todos` | – | Delete all completed todos |
 
-Todos are stored in `~/.todos.json` by default. Override the location with the
-`TODO_DB` environment variable. IDs count up from the current maximum, so they
-never collide after a removal.
+## Storage
+
+Todos are **per project**. The server writes `.todos.json` in its current
+working directory, and an MCP stdio server is launched with its cwd set to the
+project you started the client in — so each project keeps its own list:
+
+```
+~/code/app-a/.todos.json     # app-a's todos
+~/code/app-b/.todos.json     # app-b's todos
+```
+
+Override the path with the `TODO_DB` environment variable (e.g. to force a
+single shared list). IDs count up from the current maximum, so they never
+collide after a removal.
+
+Since `.todos.json` lands inside each project, add it to your **global**
+gitignore so it never clutters `git status`:
+
+```bash
+echo '.todos.json' >> ~/.config/git/ignore
+```
+
+(Or commit it intentionally if you want project todos to travel with the repo.)
 
 ## Requirements
 
